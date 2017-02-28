@@ -1,8 +1,3 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static java.util.Arrays.stream;
 
 /**
@@ -20,22 +15,17 @@ public class ArrayStorage {
 
     void save(Resume r) {
 
-        if (get(r.toString()) != null) {
+        if ((getIndex(r.uuid) > -1)) {
             System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
         } else if (isOverflow()) {
             System.out.println("Sorry, no more space in Array");
         } else {
-
-            {
-                storage[size++] = r;
-
-            }
+            storage[size++] = r;
         }
     }
 
-
     Resume get(String uuid) {
-        Resume m = null;
+        Resume m;
         for (Resume r : storage) {
             if (r != null && r.toString().equals(uuid)) {
                 m = r;
@@ -45,28 +35,29 @@ public class ArrayStorage {
         return null;
     }
 
-    Resume[] clean(Resume[] v) {
-        List<Resume> list = new ArrayList<Resume>(Arrays.asList(v));
-        list.removeAll(Collections.singleton(null));
-        return list.toArray(new Resume[list.size()]);
+
+    int getIndex(String uid) {
+        int index = -1;
+        for (int i = 0; i < size; i++) {
+            if (storage[i].uuid == uid) {
+                index = i;
+                return index;
+            }
+        }
+        return index;
     }
 
     void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index > -1) {
+            int tmp = size - 1;
+            storage[index] = storage[tmp];
+            storage[tmp] = null;
+            size--;
 
-        for (int i = 0; i < size; i++) {
-            if (storage[i] != null && storage[i].toString().equals(uuid)) {
-                storage[i] = null;
-
-                clean(storage);
-                size--;
-
-                System.out.print(size());
-
-            }
         }
-
-
     }
+
 
     /**
      * @return array, contains only Resumes in storage (without null)
@@ -81,10 +72,9 @@ public class ArrayStorage {
     }
 
     protected boolean isOverflow() {
-        if (size >= (STORAGE_LIMIT - 1))
-            return true;
-        else
-            return false;
+        if ((size >= (STORAGE_LIMIT - 1))) return true;
+        else return false;
+
     }
 
 
