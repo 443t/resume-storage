@@ -10,7 +10,9 @@ public class ArrayStorage {
 
 
     void clear() {
-        storage = new Resume[STORAGE_LIMIT];
+        for (int i = 0; i < storage.length; i++) {
+            storage[i] = null;
+        }
     }
 
     void save(Resume r) {
@@ -25,14 +27,10 @@ public class ArrayStorage {
     }
 
     Resume get(String uuid) {
-        Resume m;
-        for (Resume r : storage) {
-            if (r != null && r.toString().equals(uuid)) {
-                m = r;
-                return m;
-            }
-        }
-        return null;
+        int index = getIndex(uuid);
+        if (index > -1) {
+            return storage[index];
+        } else return null;
     }
 
 
@@ -54,8 +52,7 @@ public class ArrayStorage {
             storage[index] = storage[tmp];
             storage[tmp] = null;
             size--;
-
-        }
+        } else System.out.println("Nothing to delete.");
     }
 
 
@@ -72,9 +69,10 @@ public class ArrayStorage {
     }
 
     protected boolean isOverflow() {
-        if ((size >= (STORAGE_LIMIT - 1))) return true;
-        else return false;
-
+        if (size >= (STORAGE_LIMIT - 1))
+            return true;
+        else
+            return false;
     }
 
 
