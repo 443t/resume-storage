@@ -4,40 +4,50 @@ import static java.util.Arrays.stream;
  * Array based storage for Resumes
  */
 public class ArrayStorage {
-    protected static final int STORAGE_LIMIT = 10000;
-    Resume[] storage = new Resume[STORAGE_LIMIT];
-    int size = 0;
+    private static final int STORAGE_LIMIT = 10000;
+    private Resume[] storage = new Resume[STORAGE_LIMIT];
+    private int size = 0;
 
 
-    void clear() {
-        for (int i = 0; i < storage.length; i++) {
+    public void clear() {
+        for (int i = 0; i < size; i++) {
             storage[i] = null;
         }
     }
 
-    void save(Resume r) {
+    public void update(Resume r) {
+        if ((getIndex(r.uuid) > -1)) {
+            storage[getIndex(r.uuid)].uuid = r.uuid;
+        } else System.out.println("ERROR");
+
+    }
+
+    public void save(Resume r) {
 
         if ((getIndex(r.uuid) > -1)) {
             System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
         } else if (isOverflow()) {
-            System.out.println("Sorry, no more space in Array");
+            System.out.println("ERROR");
         } else {
             storage[size++] = r;
         }
     }
 
-    Resume get(String uuid) {
+    public Resume get(String uuid) {
         int index = getIndex(uuid);
         if (index > -1) {
             return storage[index];
-        } else return null;
+        } else {
+            System.out.println("ERROR");
+            return null;
+        }
     }
 
 
-    int getIndex(String uid) {
+    public int getIndex(String uid) {
         int index = -1;
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid == uid) {
+            if (storage[i].uuid.equals(uid)) {
                 index = i;
                 return index;
             }
@@ -45,38 +55,35 @@ public class ArrayStorage {
         return index;
     }
 
-    void delete(String uuid) {
+    public void delete(String uuid) {
         int index = getIndex(uuid);
         if (index > -1) {
             int tmp = size - 1;
             storage[index] = storage[tmp];
             storage[tmp] = null;
             size--;
-        } else System.out.println("Nothing to delete.");
+        } else System.out.println("ERROR");
     }
 
 
     /**
      * @return array, contains only Resumes in storage (without null)
      */
-    Resume[] getAll() {
+    public Resume[] getAll() {
 
-        Resume[] tmp = new Resume[STORAGE_LIMIT];
-        return tmp = stream(storage)
+        Resume[] r = new Resume[STORAGE_LIMIT];
+        return r = stream(storage)
                 .filter(s -> (s != null))
                 .toArray(Resume[]::new);
 
     }
 
     protected boolean isOverflow() {
-        if (size >= (STORAGE_LIMIT - 1))
-            return true;
-        else
-            return false;
+        return size >= (STORAGE_LIMIT - 1);
     }
 
 
-    int size() {
+    public int size() {
         return size;
     }
 }
