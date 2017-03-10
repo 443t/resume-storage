@@ -18,7 +18,7 @@ public class ArrayStorage {
     public void update(Resume r) {
         if ((getIndex(r.uuid) > -1)) {
             storage[getIndex(r.uuid)].uuid = r.uuid;
-        } else System.out.println("ERROR");
+        } else System.out.println("Resume doesn't exist.");
 
     }
 
@@ -27,7 +27,7 @@ public class ArrayStorage {
         if ((getIndex(r.uuid) > -1)) {
             System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
         } else if (isOverflow()) {
-            System.out.println("ERROR");
+            System.out.println("Storage is full");
         } else {
             storage[size++] = r;
         }
@@ -38,7 +38,7 @@ public class ArrayStorage {
         if (index > -1) {
             return storage[index];
         } else {
-            System.out.println("ERROR");
+            System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
             return null;
         }
     }
@@ -62,7 +62,7 @@ public class ArrayStorage {
             storage[index] = storage[tmp];
             storage[tmp] = null;
             size--;
-        } else System.out.println("ERROR");
+        } else System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
     }
 
 
