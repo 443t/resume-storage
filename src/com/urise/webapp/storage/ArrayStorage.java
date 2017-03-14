@@ -1,4 +1,8 @@
-import static java.util.Arrays.stream;
+package com.urise.webapp.storage;
+
+import com.urise.webapp.model.Resume;
+
+import java.util.Arrays;
 
 /**
  * Array based storage for Resumes
@@ -16,16 +20,16 @@ public class ArrayStorage {
     }
 
     public void update(Resume r) {
-        if ((getIndex(r.uuid) > -1)) {
-            storage[getIndex(r.uuid)].uuid = r.uuid;
-        } else System.out.println("Resume doesn't exist.");
+        if ((getIndex(r.getUuid()) > -1)) {
+            storage[getIndex(r.getUuid())].setUuid(r.getUuid());
+        } else System.out.println("com.urise.webapp.model.Resume doesn't exist.");
 
     }
 
     public void save(Resume r) {
 
-        if ((getIndex(r.uuid) > -1)) {
-            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
+        if ((getIndex(r.getUuid()) > -1)) {
+            System.out.println("Sorry, it can't be save because com.urise.webapp.model.Resume with uuid = " + r.toString() + " already exist!");
         } else if (isOverflow()) {
             System.out.println("Storage is full");
         } else {
@@ -38,7 +42,7 @@ public class ArrayStorage {
         if (index > -1) {
             return storage[index];
         } else {
-            System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
+            System.out.println("com.urise.webapp.model.Resume with uuid = " + uuid + " doesn't exist.");
             return null;
         }
     }
@@ -47,7 +51,7 @@ public class ArrayStorage {
     public int getIndex(String uid) {
         int index = -1;
         for (int i = 0; i < size; i++) {
-            if (storage[i].uuid.equals(uid)) {
+            if (storage[i].getUuid().equals(uid)) {
                 index = i;
                 return index;
             }
@@ -62,7 +66,7 @@ public class ArrayStorage {
             storage[index] = storage[tmp];
             storage[tmp] = null;
             size--;
-        } else System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
+        } else System.out.println("com.urise.webapp.model.Resume with uuid = " + uuid + " doesn't exist.");
     }
 
 
@@ -72,7 +76,7 @@ public class ArrayStorage {
     public Resume[] getAll() {
 
         Resume[] r = new Resume[STORAGE_LIMIT];
-        return r = stream(storage)
+        return r = Arrays.stream(storage)
                 .filter(s -> (s != null))
                 .toArray(Resume[]::new);
 
