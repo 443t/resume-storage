@@ -14,22 +14,21 @@ public class ArrayStorage {
 
 
     public void clear() {
-        for (int i = 0; i < size; i++) {
-            storage[i] = null;
-        }
+        Arrays.fill(storage, 0, size,null);
+        size = 0;
     }
 
     public void update(Resume r) {
         if ((getIndex(r.getUuid()) > -1)) {
             storage[getIndex(r.getUuid())].setUuid(r.getUuid());
-        } else System.out.println("com.urise.webapp.model.Resume doesn't exist.");
+        } else System.out.println("Resume doesn't exist.");
 
     }
 
     public void save(Resume r) {
 
         if ((getIndex(r.getUuid()) > -1)) {
-            System.out.println("Sorry, it can't be save because com.urise.webapp.model.Resume with uuid = " + r.toString() + " already exist!");
+            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
         } else if (isOverflow()) {
             System.out.println("Storage is full");
         } else {
@@ -42,7 +41,7 @@ public class ArrayStorage {
         if (index > -1) {
             return storage[index];
         } else {
-            System.out.println("com.urise.webapp.model.Resume with uuid = " + uuid + " doesn't exist.");
+            System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
             return null;
         }
     }
@@ -66,7 +65,7 @@ public class ArrayStorage {
             storage[index] = storage[tmp];
             storage[tmp] = null;
             size--;
-        } else System.out.println("com.urise.webapp.model.Resume with uuid = " + uuid + " doesn't exist.");
+        } else System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
     }
 
 
@@ -75,10 +74,7 @@ public class ArrayStorage {
      */
     public Resume[] getAll() {
 
-        Resume[] r = new Resume[STORAGE_LIMIT];
-        return r = Arrays.stream(storage)
-                .filter(s -> (s != null))
-                .toArray(Resume[]::new);
+        return Arrays.copyOfRange(storage, 0, size);
 
     }
 
