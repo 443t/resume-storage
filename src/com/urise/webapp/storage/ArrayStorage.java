@@ -7,14 +7,14 @@ import java.util.Arrays;
 /**
  * Array based storage for Resumes
  */
-public class ArrayStorage {
+public class ArrayStorage implements Storage {
     private static final int STORAGE_LIMIT = 10000;
     private Resume[] storage = new Resume[STORAGE_LIMIT];
     private int size = 0;
 
 
     public void clear() {
-        Arrays.fill(storage, 0, size,null);
+        Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
@@ -47,7 +47,7 @@ public class ArrayStorage {
     }
 
 
-    public int getIndex(String uid) {
+    private int getIndex(String uid) {
         int index = -1;
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uid)) {
