@@ -8,7 +8,6 @@ import com.urise.webapp.model.Resume;
 public interface Storage {
 
 
-
     void clear();
 
     void update(Resume r);
