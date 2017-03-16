@@ -11,16 +11,8 @@ public class SortedArrayStorage extends AbstractArrayStorage {
 
     public void delete(String uuid) {
         int index = getIndex(uuid);
-        if (index == size - 1) {
-            storage[size - 1] = null;
-            size--;
-
-        } else if (index > -1) {
-            for (int j = index; j < size; j++) {
-
-                storage[j] = storage[j + 1];
-            }
-
+        if (index > -1) {
+            System.arraycopy(storage, index + 1, storage, index, size - index);
             size--;
         } else System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
     }
@@ -28,29 +20,24 @@ public class SortedArrayStorage extends AbstractArrayStorage {
     @Override
     public void save(Resume r) {
 
-        if ((getIndex(r.getUuid()) > -1)) {
-            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
-        } else if (isOverflow()) {
+        if (isOverflow()) {
             System.out.println("Storage is full");
-        } else if (size > 0) {
-            int i = 0;
-            while (i < size && storage[i].hashCode() < r.hashCode()) {
-                i++;
-            }
-            if (i < size + 1) {
-                //you found a place to insert the score
-                for (int j = size; j > i; j--) {
-                    storage[j] = storage[j - 1];
-                }
-                storage[i] = r;
-                size++;
-            }
-        } else if (size == 0) {
-            storage[0] = r;
-            size++;
+            return;
         }
 
+        int j = Arrays.binarySearch(storage, 0, size, r);
+        if (j > 0) {
+            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
+        }
+        if (j < 0) {
+            // this is a new value to insert (not a duplicate).
+            j = -j - 1;
+        }
+        System.arraycopy(storage, j, storage, j + 1, size - j);
+        storage[j] = r;
+        size++;
     }
+
 
     @Override
     protected int getIndex(String uuid) {
