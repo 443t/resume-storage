@@ -24,18 +24,17 @@ public class SortedArrayStorage extends AbstractArrayStorage {
             System.out.println("Storage is full");
             return;
         }
-
-        int j = Arrays.binarySearch(storage, 0, size, r);
+        int j = getIndex(r.getUuid());
         if (j > 0) {
             System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
-        }
-        if (j < 0) {
+        } else {
             // this is a new value to insert (not a duplicate).
             j = -j - 1;
+
+            System.arraycopy(storage, j, storage, j + 1, size - j);
+            storage[j] = r;
+            size++;
         }
-        System.arraycopy(storage, j, storage, j + 1, size - j);
-        storage[j] = r;
-        size++;
     }
 
 
