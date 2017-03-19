@@ -34,6 +34,35 @@ public abstract class AbstractArrayStorage implements Storage {
 
     }
 
+    public void save(Resume r) {
+        int index = getIndex(r.getUuid());
+        if (index > 0) {
+            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
+        } else if (isOverflow()) {
+            System.out.println("Storage is full");
+        } else {
+            insertElement(r, index);
+            size++;
+        }
+    }
+
+    public void delete(String uuid) {
+        int index = getIndex(uuid);
+        if (index < 0)
+        {
+            System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
+        }
+        else {
+            fillDeletedElement(index);
+            storage[size - 1] = null;
+            size--;
+        }
+    }
+
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;

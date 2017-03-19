@@ -7,36 +7,23 @@ import com.urise.webapp.model.Resume;
  */
 public class ArrayStorage extends AbstractArrayStorage {
 
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index > -1) {
-            int tmp = size - 1;
-            storage[index] = storage[tmp];
-            storage[tmp] = null;
-            size--;
-        } else System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
+    @Override
+    protected void fillDeletedElement(int index) {
+        storage[index] = storage[index - 1];
     }
 
-    public void save(Resume r) {
-
-        if ((getIndex(r.getUuid()) > -1)) {
-            System.out.println("Sorry, it can't be save because Resume with uuid = " + r.toString() + " already exist!");
-        } else if (isOverflow()) {
-            System.out.println("Storage is full");
-        } else {
-            storage[size++] = r;
-        }
+    @Override
+    protected void insertElement(Resume r, int index) {
+        storage[size++] = r;
     }
 
     protected int getIndex(String uuid) {
-
         for (int i = 0; i < size; i++) {
             if (storage[i].getUuid().equals(uuid)) {
                 return i;
             }
         }
         return -1;
-
     }
 
 }
