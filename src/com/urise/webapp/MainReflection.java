@@ -1,6 +1,8 @@
 package com.urise.webapp;
 
 import com.urise.webapp.model.Resume;
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 import java.lang.reflect.Field;
 
@@ -15,8 +17,10 @@ public class MainReflection {
         System.out.println(field.getName());
         System.out.println(field.get(r));
         field.set(r, "new_uuid");
+        System.out.println(r.toString());
         //TODO : invoke r.toString via reflection
-        System.out.println(r);
+        System.out.println(ToStringBuilder.reflectionToString(r, ToStringStyle.MULTI_LINE_STYLE));
+
 
     }
 }
