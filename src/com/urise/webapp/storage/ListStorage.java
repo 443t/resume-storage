@@ -3,65 +3,70 @@ package com.urise.webapp.storage;
 import com.urise.webapp.model.Resume;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by vp on 26.03.17.
  */
-public class ListStorage extends AbstractStorage {
+public class ListStorage extends AbstractStorage<Integer> {
 
-    ArrayList<Resume> storage = new ArrayList();
+    private List<Resume> list = new ArrayList<>();
+
 
     @Override
     public void clear() {
-        storage.clear();
+
+        list.clear();
     }
 
     @Override
-    public void update(Resume r) {
-
-        int index = getIndex(r.getUuid());
-        storage.set(index, r);
-
-    }
-
-    @Override
-    public void save(Resume r) {
-        storage.add(r);
-    }
-
-    @Override
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            return storage.get(index);
-        } else return null;
-    }
-
-    @Override
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index >= 0) {
-            storage.remove(index);
+    protected Integer getSearchKey(String uuid) {
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getUuid().equals(uuid)) {
+                return (Integer) i;
+            }
         }
+        return null;
     }
 
     @Override
-    public Resume[] getAll() {
-        return (Resume[]) storage.toArray();
+    protected boolean isExist(Integer searchKey) {
+        return searchKey != null;
+    }
+
+    @Override
+    protected void doDelete(Integer searchKey) {
+        list.remove(((Integer) searchKey).intValue());
+
+    }
+
+    @Override
+    protected void doSave(Resume r, Integer searchKey) {
+        list.add(r);
+    }
+
+    @Override
+    protected void doUpdate(Resume r, Integer searchKey) {
+        list.set((Integer) searchKey, r);
+    }
+
+    @Override
+    protected Resume doGet(Integer searchKey) {
+
+
+        return list.get((Integer) searchKey);
+    }
+
+
+    @Override
+    public List<Resume> doCopyAll() {
+        return new ArrayList<>(list);
     }
 
     @Override
     public int size() {
-        return storage.size();
+        return list.size();
     }
 
-    public int getIndex(String uuid) {
-        int index = -1;
-        for (int i = 0; i < storage.size(); i++) {
-            if (storage.get(i).getUuid().equals(uuid)) {
-                index = i;
-            }
-        }
-        return index;
-    }
+
 }

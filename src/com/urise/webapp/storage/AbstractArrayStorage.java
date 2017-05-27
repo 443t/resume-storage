@@ -1,16 +1,15 @@
 package com.urise.webapp.storage;
 
-import com.urise.webapp.exception.ExistStorageException;
-import com.urise.webapp.exception.NotExistStorageException;
 import com.urise.webapp.exception.StorageException;
 import com.urise.webapp.model.Resume;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Array based storage for Resumes
  */
-public abstract class AbstractArrayStorage implements Storage {
+public abstract class AbstractArrayStorage extends AbstractStorage<Integer> {
     protected static final int STORAGE_LIMIT = 10000;
     protected Resume[] storage = new Resume[STORAGE_LIMIT];
     protected int size = 0;
@@ -19,66 +18,59 @@ public abstract class AbstractArrayStorage implements Storage {
         return size;
     }
 
-    public Resume get(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0) {
-            throw new NotExistStorageException(uuid);
-        } else {
-            return storage[index];
-        }
-    }
-
-    public void update(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index == -1) {
-            throw new NotExistStorageException(r.getUuid());
-        } else storage[index]=r;
-    }
-
-    public void save(Resume r) {
-        int index = getIndex(r.getUuid());
-        if (index > 0) {
-            throw new ExistStorageException(r.getUuid());
-        } else if (size == STORAGE_LIMIT) {
-            throw new StorageException("Storage overflow", r.getUuid());
-        } else {
-            insertElement(r, index);
-            size++;
-        }
-    }
-
-    public void delete(String uuid) {
-        int index = getIndex(uuid);
-        if (index < 0)
-        {
-            System.out.println("Resume with uuid = " + uuid + " doesn't exist.");
-        }
-        else {
-            fillDeletedElement(index);
-            storage[size - 1] = null;
-            size--;
-        }
-    }
-
-    protected abstract void fillDeletedElement(int index);
-
-    protected abstract void insertElement(Resume r, int index);
-
     public void clear() {
         Arrays.fill(storage, 0, size, null);
         size = 0;
     }
 
-    public Resume[] getAll() {
+    @Override
+    protected void doUpdate(Resume r, Integer searchKey) {
+        storage[(Integer) searchKey] = r;
+    }
 
-        return Arrays.copyOfRange(storage, 0, size);
+    @Override
+    public List<Resume> doCopyAll() {
+
+        return Arrays.asList(Arrays.copyOfRange(storage, 0, size));
 
     }
+
+    @Override
+    protected void doSave(Resume r, Integer index) {
+        if (size == STORAGE_LIMIT) {
+            throw new StorageException("Storage overflow", r.getUuid());
+        } else {
+            insertElement(r, (Integer) index);
+            size++;
+        }
+    }
+
+    @Override
+    protected void doDelete(Integer index) {
+        fillDeletedElement((Integer) index);
+        storage[size - 1] = null;
+        size--;
+    }
+
+    public Resume doGet(Integer index) {
+        return storage[(Integer) index];
+    }
+
+    @Override
+    protected boolean isExist(Integer index){
+       return (Integer) index >=0;
+    }
+
+
+    protected abstract void fillDeletedElement(int index);
+
+    protected abstract void insertElement(Resume r, int index);
+
 
     protected boolean isOverflow() {
         return size >= (STORAGE_LIMIT - 1);
     }
 
 
-    protected abstract int getIndex(String uuid);
+    protected abstract Integer getSearchKey(String uuid);
 }

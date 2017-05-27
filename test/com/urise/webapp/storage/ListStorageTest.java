@@ -4,9 +4,11 @@ package com.urise.webapp.storage;
 /**
  * Created by vp on 22.03.17.
  */
-public class ListStorageTest extends AbstractArrayStorageTest {
+public class ListStorageTest extends AbstractStorageTest {
+
+    public ListStorageTest()
     {
-        super.storage = new ListStorage();
+        super(new ListStorage());
     }
 }
 
